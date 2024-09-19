@@ -1,0 +1,9 @@
+name: D:\AutomatedValorantScarper\environments\utkarshgft1
+channels:
+  - defaults
+dependencies:
+  - jupyter
+  - matplotlib
+  - numpy
+  - pandas
+prefix: D:\AutomatedValorantScarper\environments\utkarshgft1
