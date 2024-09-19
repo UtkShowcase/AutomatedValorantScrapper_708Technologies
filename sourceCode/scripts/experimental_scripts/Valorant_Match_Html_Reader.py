@@ -101,7 +101,8 @@ time.sleep(1)
 
 # Function to extract elements, scroll, and save HTML content
 def extract_elements_html_with_navigation_to_file(n_start, n_end):
-    for n in range(n_start, n_end + 1, 2):  # Iterate over the changing div numbers
+    for n in range(n_start, n_end + 1, 2):
+        print(f"n:-{n}")# Iterate over the changing div numbers
         for a_index in range(1,3):
             double_match_fg = True
             try:
@@ -146,18 +147,18 @@ def extract_elements_html_with_navigation_to_file(n_start, n_end):
                     last_height = new_height
 
                     # After scrolling, get the HTML content of the specific section
-                    specific_section_html = scrollable_element.get_attribute('outerHTML')
+                specific_section_html = scrollable_element.get_attribute('outerHTML')
 
                     # Save the specific HTML content to a file
-                    filename = f"page_{n}_a{a_index}.html"
-                    with open(filename, "w", encoding="utf-8") as f:
-                        f.write(specific_section_html)
+                filename = f"page_{n}_a{a_index}.html"
+                with open(filename, "w", encoding="utf-8") as f:
+                    f.write(specific_section_html)
 
                     # Navigate back to the previous page
-                    driver.back()
-                    time.sleep(8)
+                driver.back()
+                time.sleep(8)
                     
-                    a_index = 3
+                a_index = 3
                 
             else:
                 
@@ -186,16 +187,16 @@ def extract_elements_html_with_navigation_to_file(n_start, n_end):
                     last_height = new_height
 
                         # After scrolling, get the HTML content of the specific section
-                    specific_section_html = scrollable_element.get_attribute('outerHTML')
+                specific_section_html = scrollable_element.get_attribute('outerHTML')
 
                         # Save the specific HTML content to a file
-                    filename = f"page_{n}_a{a_index}.html"
-                    with open(filename, "w", encoding="utf-8") as f:
-                        f.write(specific_section_html)
+                filename = f"page_{n}_a{a_index}.html"
+                with open(filename, "w", encoding="utf-8") as f:
+                    f.write(specific_section_html)
 
                         # Navigate back to the previous page
-                    driver.back()
-                    time.sleep(8)
+                driver.back()
+                time.sleep(8)
                     
                 # Wait for the previous page to loa
 
