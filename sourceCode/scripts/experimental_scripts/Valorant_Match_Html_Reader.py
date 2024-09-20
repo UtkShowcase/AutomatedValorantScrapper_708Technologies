@@ -33,24 +33,11 @@ locate.send_keys("valorant champion istanbul vlr.gg" + Keys.ENTER)
 time.sleep(2)
 #click the appropriate link and dive into "matches" segment
 driver.find_element(by=By.XPATH, value="//*[@id='rso']/div[1]/div/div/div/div[1]/div/div/span/a/h3").click()
-time.sleep(1)         
+time.sleep(1)
 
 driver.find_element(by=By.XPATH, value="//*[@id='wrapper']/div[1]/div/div[1]/div[2]/a[2]/div").click()
 time.sleep(1)
 
-
-# Function to generate safe filenames from the page title
-def generate_safe_filename(base_name, n, a_index):
-    # Retrieve the page title
-    page_title = driver.title
-
-    # Sanitize the title to make it file-system safe
-    sanitized_title = re.sub(r'[\\/*?:"<>|]', "", page_title).strip()
-
-    # Format filename with base name, page title, and div/a indices
-    filename = f"{sanitized_title}_div{n}_a{a_index}.html"
-
-    return filename
 
 
 # Function to generate safe filenames from the page title
