@@ -4,167 +4,124 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
-
+from selenium.webdriver.common.keys import Keys
 import time
-import pathlib
-import os
+import re
 
+s = Service("C:/Users/ADITYA/OneDrive/Desktop/chromedriver.exe")
 
-def recusrsiveWorkingForA(recursive_key,N,driver,HTML_SAVING_DIR_LOC,match_url_link):
-    
-    if recursive_key == -1:
-        return None
-    
-    else:
-        
-        try:
-            driver.get(match_url_link)
-            WebDriverWait(driver, 15)
-            
-            xpath = f'//*[@id="wrapper"]/div[1]/div/div[{N}]/a[{recursive_key}]'
-            xpath = r'{}'.format(xpath)
-            print(f"Checking Into Match with a = {recursive_key} with xpath:- {xpath}")
-            WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, xpath)))
-            driver.find_element(By.XPATH, xpath).click()
-            
-        except Exception as e:
-            
-            print(f"Cannot find the  xpath with a = {recursive_key} and xpath = {xpath} hence quiting and running for new N")
-            return recusrsiveWorkingForA(recursive_key=-1,N=None,driver=None,HTML_SAVING_DIR_LOC=None,match_url_link=None)
-        
-        else:
-            
-            print(f"Into the a = {recursive_key}")
-            target_xpath = '//*[@id="wrapper"]/div[1]/div[3]/div[6]/div/div[3]'
-            WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, target_xpath)))
+# set different options for the browser
+chrome_options = Options()
+chrome_options.add_experimental_option("detach", True)
+chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
-                # Find the scrollable section
-            scrollable_element = driver.find_element(By.XPATH, target_xpath)
-            last_height = driver.execute_script("return arguments[0].scrollHeight", scrollable_element)
+# to remove errors
+chrome_options.add_argument("--ignore-certificate-errors")
+chrome_options.add_argument("--ignore-ssl-errors")
 
-                # Scroll within the specific section
-            while True:
-                    # Scroll down within the specific section
-                driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", scrollable_element)
+#maximize the browser
+chrome_options.add_argument("start-maximized")
 
-                    # Wait for the content to load
-                time.sleep(2)
+driver = selenium.webdriver.Chrome(service=s, options=chrome_options)
 
-                    # Calculate new scroll height and compare with the last scroll height
-                new_height = driver.execute_script("return arguments[0].scrollHeight", scrollable_element)
+#site opening
+driver.get("https://www.google.co.in/")
+time.sleep(1)
+#Searching match and pressing the enter key
+locate= driver.find_element(by=By.XPATH, value="//*[@id='APjFqb']")
+locate.send_keys("valorant champion istanbul vlr.gg" + Keys.ENTER)
+time.sleep(2)
+#click the appropriate link and dive into "matches" segment
+driver.find_element(by=By.XPATH, value="//*[@id='rso']/div[1]/div/div/div/div[1]/div/div/span/a/h3").click()
+time.sleep(1)         
 
-                if new_height == last_height:
-                        break  # Exit the loop if no new content is loaded
-
-                last_height = new_height
-
-                # After scrolling, get the HTML content of the specific section
-            specific_section_html = scrollable_element.get_attribute('outerHTML')
-
-                # Save the specific HTML content to a file
-            
-            
-            files = os.listdir(HTML_SAVING_DIR_LOC)
-            if len(files) == 0:
-                file_number = 0
-            else:
-                file_number = sorted(files,key=lambda x: int(x[x.index("__")+2:x.rindex("__")]))[-1]
-                file_number = int(file_number[file_number.index("__")+2:file_number.rindex("__")])
-            OUTUPT_HTML_FILE_LOC = HTML_SAVING_DIR_LOC.joinpath(f"FILENO__{file_number+1}__708TECH.html")
-            with open(OUTUPT_HTML_FILE_LOC, "w", encoding="utf-8") as f:
-                    print(f"Saving File for a = {recursive_key} and xpath = {xpath}")
-                    print(f"\nLocation :- {OUTUPT_HTML_FILE_LOC}")
-                    f.write(specific_section_html)
-
-            # Navigate back to the previous page
-            # Wait for the previous page to load
-            return recusrsiveWorkingForA(recursive_key=recursive_key+1,N=N,driver=driver,HTML_SAVING_DIR_LOC=HTML_SAVING_DIR_LOC,match_url_link=match_url_link)
-
-
-
-
-def workingForN(hit_N,driver,HTML_SAVING_DIR_LOC,match_url_link):  
-      
-      
-    went_wrong = True
-    print("<---------------------------------->")
-        
-    try:
-
-        driver.get(match_url_link)
-        WebDriverWait(driver, 15)
-        
-        N_xpath = f'//*[@id="wrapper"]/div[1]/div/div[{hit_N}]/a[1]'
-        N_xpath = r'{}'.format(N_xpath)
-        
-        print(f"Trying for N={hit_N} using N_xpath:- {N_xpath}")
-        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, N_xpath)))  
-        driver.find_element(By.XPATH, N_xpath).click()
-        
-            
-    except Exception as e:
-            
-        print(f"Excpetion Occrued for N = {hit_N} on N_xpath = {N_xpath}")
-            
-    else :
-            
-        print(f"Succesful Hit for N = {hit_N} and xpath = {N_xpath}\n Going For a Runs!!!")
-        recusrsiveWorkingForA(recursive_key=1,N=hit_N,driver=driver,HTML_SAVING_DIR_LOC=HTML_SAVING_DIR_LOC,match_url_link=match_url_link)
-        went_wrong = False 
-        
-    print(f"Done for N = {hit_N}")
-    print("<---------------------------------->")
-    return went_wrong
-        
-        
-# Function to extract elements, scroll, and save HTML content
-def extract_elements_html_with_navigation_to_file(HTML_SAVING_DIR_LOC,match_url_link,driver):
-    
-    wrong_hits = set()
-    hit_N = 4
-    while len(wrong_hits) <= 9:
-        
-        went_wrong = workingForN(hit_N=hit_N,driver=driver,HTML_SAVING_DIR_LOC=HTML_SAVING_DIR_LOC,match_url_link=match_url_link)
-        
-        if went_wrong == True:
-            wrong_hits.add(hit_N)
-        
-        hit_N += 2
-        
+driver.find_element(by=By.XPATH, value="//*[@id='wrapper']/div[1]/div/div[1]/div[2]/a[2]/div").click()
 time.sleep(1)
 
 
 
-def main(match_url_link):
-    
-    chrome_options = Options()
-    chrome_options.add_experimental_option("detach", True)
-    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+# Function to generate safe filenames from the page title
+def generate_safe_filename(base_name, n, a_index):
+    # Retrieve the page title
+    page_title = driver.title
 
-    # to remove errors
-    chrome_options.add_argument("--ignore-certificate-errors")
-    chrome_options.add_argument("--ignore-ssl-errors")
+    # Sanitize the title to make it file-system safe
+    sanitized_title = re.sub(r'[\\/*?:"<>|]', "", page_title).strip()
 
-    #maximize the browser
-    chrome_options.add_argument("start-maximized")
+    # Format filename with base name, page title, and div/a indices
+    filename = f"{sanitized_title}_div{n}_a{a_index}.html"
 
-    service = Service(ChromeDriverManager().install())
-    driver = selenium.webdriver.Chrome(service=service, options=chrome_options)
-    
+    return filename
 
-    # Call the function to extract and save HTML content
-    HTML_SAVING_DIR_LOC = pathlib.Path.cwd()
-    HTML_SAVING_DIR_LOC = HTML_SAVING_DIR_LOC.parent.parent.parent.joinpath("workingdata","html_data")  
-    
-    extract_elements_html_with_navigation_to_file(HTML_SAVING_DIR_LOC=HTML_SAVING_DIR_LOC,match_url_link=match_url_link,driver=driver)
-    
-    #close the chrome browser
-    driver.quit()
-    
-    
-if __name__ == "__main__":
-        
-    match_url_link = r"https://www.vlr.gg/event/matches/1015/valorant-champions-2022/?series_id=2184"
-    main(match_url_link=match_url_link)
+
+# Function to extract elements, scroll, and save HTML content
+def extract_elements_html_with_navigation_to_file(n_start, n_end):
+    for n in range(n_start, n_end + 1, 2):  # Iterate over the changing div numbers
+
+        try:
+            # Dynamically count how many 'a' elements are present within the current 'div'
+            div_xpath = f'//*[@id="wrapper"]/div[1]/div/div[{n}]'
+            a_elements = driver.find_elements(By.XPATH, f"{div_xpath}/a")
+
+            # If 'a' elements are found, iterate over them
+            for a_index in range(1, len(a_elements) + 1):
+              xpath = f'{div_xpath}/a[{a_index}]'  # Create the general XPath dynamically
+
+              try:
+                # Click the link to navigate to the new page
+                driver.find_element(By.XPATH, xpath).click()
+                time.sleep(3)  # Wait for the new page to load
+
+                # Wait for the target content section to be present
+                target_xpath = '//*[@id="wrapper"]/div[1]/div[3]/div[6]/div/div[3]'
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, target_xpath)))
+
+                # Find the scrollable section
+                scrollable_element = driver.find_element(By.XPATH, target_xpath)
+                last_height = driver.execute_script("return arguments[0].scrollHeight", scrollable_element)
+
+                # Scroll within the specific section
+                while True:
+                    # Scroll down within the specific section
+                    driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", scrollable_element)
+
+                    # Wait for the content to load
+                    time.sleep(2)
+
+                    # Calculate new scroll height and compare with the last scroll height
+                    new_height = driver.execute_script("return arguments[0].scrollHeight", scrollable_element)
+
+                    if new_height == last_height:
+                        break  # Exit the loop if no new content is loaded
+
+                    last_height = new_height
+
+                # After scrolling, get the HTML content of the specific section
+                specific_section_html = scrollable_element.get_attribute('outerHTML')
+
+                # Generate a safe filename using the sanitized page title
+                filename = generate_safe_filename("page", n, a_index)
+
+                # Save the specific HTML content to a file
+                with open(filename, "w", encoding="utf-8") as f:
+                    f.write(specific_section_html)
+                # Navigate back to the previous page
+                driver.back()
+                time.sleep(8)  # Wait for the previous page to load
+
+              except Exception as e:
+                print(f"Element not found for {xpath}: {str(e)}")
+
+        except Exception as e:
+            print(f"Error processing div {n}: {str(e)}")
+
+    # Optional sleep between iterations to avoid detection
+
+time.sleep(1)
+
+
+# Call the function to extract and save HTML content
+extract_elements_html_with_navigation_to_file(14, 18)
+
+#close the chrome browser
+driver.quit()
