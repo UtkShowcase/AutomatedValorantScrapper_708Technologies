@@ -199,7 +199,7 @@ def read_from_map_html(map_html):
 
 
 
-def main(MATCH_HTML_LOC,OUTPUT_LOC):
+def main(MATCH_HTML_LOC):
     """This Method Reads Full Data from the MATCH HTML(including every map,rows).
 
     Args:
@@ -245,6 +245,5 @@ def main(MATCH_HTML_LOC,OUTPUT_LOC):
     # Post-Processing the Full Result and Storing in the Respective OUTPUT LOC 
     result = pd.concat(maps_df,axis=0)
     result.reset_index(inplace=True,drop=True)
-    result.to_csv(OUTPUT_LOC,index=True)
-    print(f"The Data Saved Inside :-\n{OUTPUT_LOC}")
+    return result
 
