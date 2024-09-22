@@ -137,7 +137,7 @@ time.sleep(1)
 
 
 
-def main(match_url_link):
+def main(match_url_link,HTML_SAVING_DIR_LOC):
     
     chrome_options = Options()
     chrome_options.add_experimental_option("detach", True)
@@ -154,9 +154,7 @@ def main(match_url_link):
     driver = selenium.webdriver.Chrome(service=service, options=chrome_options)
     
 
-    # Call the function to extract and save HTML content
-    HTML_SAVING_DIR_LOC = pathlib.Path.cwd()
-    HTML_SAVING_DIR_LOC = HTML_SAVING_DIR_LOC.parent.parent.parent.joinpath("workingdata","html_data")  
+    # Call the function to extract and save HTML content  
     
     extract_elements_html_with_navigation_to_file(HTML_SAVING_DIR_LOC=HTML_SAVING_DIR_LOC,match_url_link=match_url_link,driver=driver)
     
