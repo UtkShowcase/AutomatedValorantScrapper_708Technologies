@@ -31,12 +31,17 @@ time.sleep(1)
 locate= driver.find_element(by=By.XPATH, value="//*[@id='APjFqb']")
 locate.send_keys("valorant champion istanbul vlr.gg" + Keys.ENTER)
 time.sleep(2)
-#click the appropriate link and dive into "matches" segment
+#click the appropriate link 
 driver.find_element(by=By.XPATH, value="//*[@id='rso']/div[1]/div/div/div/div[1]/div/div/span/a/h3").click()
 time.sleep(1)
-
+#dive into "matches" segment
 driver.find_element(by=By.XPATH, value="//*[@id='wrapper']/div[1]/div/div[1]/div[2]/a[2]/div").click()
 time.sleep(1)
+
+#Change stage preference from playoffs to all stages
+driver.find_element(by=By.XPATH, value="//*[@id='wrapper']/div[1]/div/div[2]/div[1]/span").click()
+time.sleep(1)
+driver.find_element(by=By.XPATH, value="//*[@id='wrapper']/div[1]/div/div[2]/div[1]/span/span[2]/a[1]").click()
 
 
 
