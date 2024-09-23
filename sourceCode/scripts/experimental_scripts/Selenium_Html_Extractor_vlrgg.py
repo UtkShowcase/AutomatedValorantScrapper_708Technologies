@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
-
+from selenium.webdriver.common.keys import Keys
 import time
 import pathlib
 import os
@@ -137,7 +137,7 @@ time.sleep(1)
 
 
 
-def main(match_url_link,HTML_SAVING_DIR_LOC):
+def main(search_prompt,HTML_SAVING_DIR_LOC):
     
     chrome_options = Options()
     chrome_options.add_experimental_option("detach", True)
@@ -153,8 +153,25 @@ def main(match_url_link,HTML_SAVING_DIR_LOC):
     service = Service(ChromeDriverManager().install())
     driver = selenium.webdriver.Chrome(service=service, options=chrome_options)
     
-
-    # Call the function to extract and save HTML content  
+    driver.get("https://www.google.co.uk/")
+    WebDriverWait(driver, 7)
+    
+    a = driver.find_element(by=By.XPATH, value='//*[@id="APjFqb"]')
+    a.send_keys(search_prompt+Keys.ENTER)
+    WebDriverWait(driver, 7)
+    
+    WebDriverWait(driver, 7).until(EC.presence_of_element_located((By.XPATH,r"//*[@id='rso']/div[1]/div/div/div/div[1]/div/div/span/a/h3"))) 
+    driver.find_element(by=By.XPATH, value="//*[@id='rso']/div[1]/div/div/div/div[1]/div/div/span/a/h3").click()
+    
+    WebDriverWait(driver, 7).until(EC.presence_of_element_located((By.XPATH,r"//*[@id='wrapper']/div[1]/div/div[1]/div[2]/a[2]/div"))) 
+    driver.find_element(by=By.XPATH, value="//*[@id='wrapper']/div[1]/div/div[1]/div[2]/a[2]/div").click()
+    
+    WebDriverWait(driver, 7).until(EC.presence_of_element_located((By.XPATH,r"//*[@id='wrapper']/div[1]/div/div[2]/div[1]/span"))) 
+    driver.find_element(by=By.XPATH, value="//*[@id='wrapper']/div[1]/div/div[2]/div[1]/span").click()
+    
+    WebDriverWait(driver, 7).until(EC.presence_of_element_located((By.XPATH,r"//*[@id='wrapper']/div[1]/div/div[2]/div[1]/span/span[2]/a[1]"))) 
+    driver.find_element(by=By.XPATH, value="//*[@id='wrapper']/div[1]/div/div[2]/div[1]/span/span[2]/a[1]").click() 
+    match_url_link = driver.current_url    
     
     extract_elements_html_with_navigation_to_file(HTML_SAVING_DIR_LOC=HTML_SAVING_DIR_LOC,match_url_link=match_url_link,driver=driver)
     
@@ -164,5 +181,7 @@ def main(match_url_link,HTML_SAVING_DIR_LOC):
     
 if __name__ == "__main__":
         
-    match_url_link = r"https://www.vlr.gg/event/matches/1015/valorant-champions-2022/?series_id=2184"
-    main(match_url_link=match_url_link)
+    search_prompt = r"valorant champion istanbul vlr.gg"
+    HTML_SAVING_DIR_LOC = pathlib.Path.cwd()
+    HTML_SAVING_DIR_LOC = HTML_SAVING_DIR_LOC.parent.parent.parent.joinpath("workingdata","html_data")
+    main(search_prompt=search_prompt,HTML_SAVING_DIR_LOC=HTML_SAVING_DIR_LOC)

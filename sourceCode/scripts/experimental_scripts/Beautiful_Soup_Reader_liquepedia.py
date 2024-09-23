@@ -83,4 +83,4 @@ def main(INPUT_HTML_LOC,OUTPUT_LOC):
 
 if __name__ == "__main__":
     
-    main(r"D:\ValorantScrappingProject\data\team_list.html",r"D:\AutomatedValorantScarper\workingdata\output_data\output.csv") 
+    main(r"D:\AutomatedValorantScarper\sourceCode\scripts\experimental_scripts\team_list.html",r"D:\AutomatedValorantScarper\workingdata\output_data\output.csv") 
