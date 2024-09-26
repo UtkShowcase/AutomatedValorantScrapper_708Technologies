@@ -10,9 +10,7 @@ from selenium.webdriver.chrome.service import Service
 import time
 
 
-if __name__ == "__main__":
-    
-    print("inside")
+def main(HTML_OUTPUT_LOC):
     
     chrome_options = Options()
     chrome_options.add_experimental_option("detach", True)
@@ -60,8 +58,8 @@ if __name__ == "__main__":
         old_height=new_height
 
     html= driver.page_source
-
-    with open ("team_list.html", "w") as f:
+    
+    with open (HTML_OUTPUT_LOC, "w") as f:
         f.write(html)
 
     driver.quit()
